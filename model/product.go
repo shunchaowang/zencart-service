@@ -1,13 +1,15 @@
 package model
 
-type (
-    Product struct {
-        Id string `json:"id"`
-        Model string `json:"model"`
-    }
+import "gopkg.in/mgo.v2/bson"
 
-    ProductType struct {
-        Id string `json:"id"`
-        Name string `json:"name"`
-    }
+type (
+	Product struct {
+		Id    bson.ObjectId `json:"id" bson:"_id"`
+		Model string        `json:"model" bson:"model"`
+	}
+
+	ProductType struct {
+		Id   bson.ObjectId `json:"id" bson:"_id"`
+		Name string        `json:"name" bson:"name"`
+	}
 )
