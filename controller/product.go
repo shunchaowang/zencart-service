@@ -2,11 +2,13 @@ package controller
 
 import (
 	// standard library packages
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	// third party packages
+	"github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"

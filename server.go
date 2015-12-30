@@ -2,9 +2,11 @@ package main
 
 import (
 	// standard library packages
+	"database/sql"
 	"net/http"
 
 	// third party packages
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2"
 
@@ -45,4 +47,14 @@ func getSession() *mgo.Session {
 
 	// Deliver session
 	return s
+}
+
+func getMysqlDB() *sql.DB {
+	db, err := sql.Open("mysql", "admin:admin@tcp(localhost:3306)/zencart?charset=utf8")
+
+	if err != nil {
+		panic(err)
+	}
+
+	return db
 }
