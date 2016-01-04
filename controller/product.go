@@ -2,6 +2,7 @@ package controller
 
 import (
 	// standard library packages
+    "fmt"
 	"database/sql"
 
 	// third party packages
@@ -45,6 +46,18 @@ func (pc ProductController) Query(s string) []model.Product {
 	if err != nil && rows == nil {
 		return nil
 	}
-	products := make([]model.Product, 10)
+    defer pc.db.Close()
+	products := make([]model.Product, 0)
+    for rows.Next() {
+        var products_id int
+        var products_model string
+        err = rows.Scan(&products_id, &products_model)
+        if err != nil {
+            panic(err)
+        }
+        fmt.Println(products_id)
+        fmt.Println(products_model)
+        products = append(products, model.Product{products_id, products_model})
+    }
 	return products
 }
