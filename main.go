@@ -21,7 +21,7 @@ func main() {
 
     router.GET("/query", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
         pc := controller.NewProductController(getMysqlDB())
-        products := pc.Query("SELECT products_id, products_model FROM products LIMIT 10 OFFSET 5")
+        products := pc.Query("SELECT products_id, products_model, type_id, type_name FROM products, product_types WHERE products.products_type = product_types.type_id LIMIT 10 OFFSET 5")
         psj, _ := json.Marshal(products)
 
         w.Header().Set("Content-Type", "application/json")

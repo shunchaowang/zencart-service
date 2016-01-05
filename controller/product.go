@@ -51,13 +51,17 @@ func (pc ProductController) Query(s string) []model.Product {
     for rows.Next() {
         var products_id int
         var products_model string
-        err = rows.Scan(&products_id, &products_model)
+        var type_id int
+        var type_name string
+        err = rows.Scan(&products_id, &products_model, &type_id, &type_name)
         if err != nil {
             panic(err)
         }
         fmt.Println(products_id)
         fmt.Println(products_model)
-        products = append(products, model.Product{products_id, products_model})
+        fmt.Println(type_id)
+        fmt.Println(type_name)
+        products = append(products, model.Product{products_id, products_model, model.ProductType{type_id, type_name}})
     }
 	return products
 }
