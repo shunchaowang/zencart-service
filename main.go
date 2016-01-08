@@ -2,37 +2,66 @@ package main
 
 import (
 	// standard library packages
-	"fmt"
-	"encoding/json"
-	"net/http"
 	"database/sql"
+	"encoding/json"
+	"fmt"
+	"net/http"
 
 	// third party packages
-    "github.com/julienschmidt/httprouter"
-    _ "github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/julienschmidt/httprouter"
 
-    // project scope packages
-    //"github.com/shunchaowang/smartcart-service/model"
-    "github.com/shunchaowang/zencart-service/controller"
+	// project scope packages
+	//"github.com/shunchaowang/smartcart-service/model"
+	"github.com/shunchaowang/zencart-service/controller"
 )
 
 func main() {
-    router := httprouter.New();
+	router := httprouter.New()
 
-    router.GET("/query", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-        pc := controller.NewProductController(getMysqlDB())
-        products := pc.Query("SELECT products_id, products_model, type_id, type_name FROM products, product_types WHERE products.products_type = product_types.type_id LIMIT 10 OFFSET 5")
-        psj, _ := json.Marshal(products)
+	router.GET("/queryProduct", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		pc := controller.NewProductController(getMysqlDB())
+		//products := pc.Query("SELECT products_id, products_model, type_id, type_name FROM products, product_types WHERE products.products_type = product_types.type_id LIMIT 10 OFFSET 5")
+		products := pc.Query()
+		psj, _ := json.Marshal(products)
 
-        w.Header().Set("Content-Type", "application/json")
-        w.WriteHeader(200)
-        fmt.Fprintf(w, "%s", psj)
-        /*for _, product := range products {
-        
-        }*/
-    })
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		fmt.Fprintf(w, "%s", psj)
+		/*for _, product := range products {
 
-    http.ListenAndServe("localhost:8080", router)
+		  }*/
+	})
+
+	router.GET("/pagedProducts", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		pc := controller.NewProductController(getMysqlDB())
+		//products := pc.Query("SELECT products_id, products_model, type_id, type_name FROM products, product_types WHERE products.products_type = product_types.type_id LIMIT 10 OFFSET 5")
+		products := pc.Query(10, 5)
+		psj, _ := json.Marshal(products)
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		fmt.Fprintf(w, "%s", psj)
+		/*for _, product := range products {
+
+		  }*/
+	})
+
+	router.GET("/allCategories", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		cc := controller.NewCategoryController(getMysqlDB())
+		//products := pc.Query("SELECT products_id, products_model, type_id, type_name FROM products, product_types WHERE products.products_type = product_types.type_id LIMIT 10 OFFSET 5")
+		categories := cc.GetAll()
+		csj, _ := json.Marshal(categories)
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		fmt.Fprintf(w, "%s", csj)
+		/*for _, product := range products {
+
+		  }*/
+	})
+
+	http.ListenAndServe("localhost:8080", router)
 }
 
 func getMysqlDB() *sql.DB {
