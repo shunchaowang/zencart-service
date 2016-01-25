@@ -115,7 +115,8 @@ func main() {
 		  }*/
 	})
 
-	http.ListenAndServe("localhost:8080", router)
+	//http.ListenAndServe("localhost:8080", router)
+	http.ListenAndServeTLS(":7443", "/Users/swang/Developer/go/cert/gocert.pem", "/Users/swang/Developer/go/cert/gokey.pem", router)
 }
 
 func getMysqlDB() *sql.DB {
