@@ -13,7 +13,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 
 	// project scope packages
-	//"github.com/shunchaowang/smartcart-service/model"
+	"github.com/shunchaowang/smartcart-service/model"
 	"github.com/shunchaowang/zencart-service/controller"
 )
 
@@ -47,12 +47,31 @@ func main() {
 
 	router.GET("/category/products", func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		pc := controller.NewProductController(getMysqlDB())
+        var products []model.Product
+
 		idParam := r.FormValue("cid")
 		id, err := strconv.Atoi(idParam)
 		if err != nil {
 			panic("id not converted to type int.")
 		}
-		products := pc.GetProductsByCategory(id)
+
+        // pagination
+        limitParam := r.FormValue("limit")
+        offsetParam := r.FormValue("offset")
+
+        if limitParam != "" && offsetParam != "" {
+            limit, err := strconv.Atoi(limitParam)
+            if err != nil {
+                panic("id not converted to type int.")
+            }
+            offset, err := strconv.Atoi(offsetParam)
+            if err != nil {
+                panic("id not converted to type int.")
+            }
+            products = pc.GetProductsByCategory(id, limit, offset)
+        } else { // without pagination
+            products = pc.GetProductsByCategory(id)
+        }
 		psj, _ := json.Marshal(products)
 
 		w.Header().Set("Content-Type", "application/json")
